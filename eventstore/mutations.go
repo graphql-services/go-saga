@@ -4,12 +4,21 @@ import (
 	"context"
 	"fmt"
 
+	"os"
+
 	"github.com/machinebox/graphql"
 )
 
 func sendRequest(req *graphql.Request) (interface{}, error) {
 	ctx := context.Background()
-	client := graphql.NewClient("https://machinebox.io/graphql")
+	URL := os.Getenv("EVENT_STORE_URL")
+
+	if URL == "" {
+		URL = "http://event-store/graphql"
+	}
+
+	client := graphql.NewClient(URL)
+
 	var data interface{}
 	err := client.Run(ctx, req, &data)
 	return data, err
@@ -17,8 +26,8 @@ func sendRequest(req *graphql.Request) (interface{}, error) {
 
 // CreateEntityOptions ...
 type CreateEntityOptions struct {
-	Entity string
-	Input  interface{}
+	Entity string      `json:"entity"`
+	Input  interface{} `json:"input"`
 }
 
 // CreateEntity ...
@@ -30,7 +39,6 @@ func CreateEntity(options CreateEntityOptions) (interface{}, error) {
 			}
 		}
 	`, options.Entity, options.Entity)
-
 	req := graphql.NewRequest(query)
 	req.Var("input", options.Input)
 
@@ -39,9 +47,9 @@ func CreateEntity(options CreateEntityOptions) (interface{}, error) {
 
 // UpdateEntityOptions ...
 type UpdateEntityOptions struct {
-	Entity   string
-	EntityID string
-	Input    interface{}
+	Entity   string      `json:"entity"`
+	EntityID string      `json:"entityId"`
+	Input    interface{} `json:"input"`
 }
 
 // UpdateEntity ...
@@ -63,8 +71,8 @@ func UpdateEntity(options UpdateEntityOptions) (interface{}, error) {
 
 // DeleteEntityOptions ...
 type DeleteEntityOptions struct {
-	Entity   string
-	EntityID string
+	Entity   string `json:"entity"`
+	EntityID string `json:"entityId"`
 }
 
 // DeleteEntity ...
