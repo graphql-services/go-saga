@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/bitly/go-nsq"
@@ -39,9 +38,6 @@ func OnEvent(options OnEventOptions) {
 	}
 
 	go func() {
-		wg := &sync.WaitGroup{}
-		wg.Add(1)
-
 		config := nsq.NewConfig()
 		q, err := nsq.NewConsumer("es-event", options.Channel, config)
 		if err != nil {
@@ -71,6 +67,5 @@ func OnEvent(options OnEventOptions) {
 				log.Panic(err)
 			}
 		}
-		wg.Wait()
 	}()
 }
