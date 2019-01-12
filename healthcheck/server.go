@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
-func StartHealthcheckServerOnDefaultPort() error {
-	return StartHealthcheckServer("80")
-}
-
 // StartHealthcheckServer ...
-func StartHealthcheckServer(port string) error {
+func StartHealthcheckServer() error {
+	port := os.Getenv("NSQ_LOOKUP_URL")
+	if port == "" {
+		port = "80"
+	}
+
 	http.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
 	})
