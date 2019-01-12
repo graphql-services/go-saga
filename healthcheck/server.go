@@ -9,7 +9,7 @@ import (
 
 // StartHealthcheckServer ...
 func StartHealthcheckServer() error {
-	port := os.Getenv("NSQ_LOOKUP_URL")
+	port := os.Getenv("HEALTHCHECK_PORT")
 	if port == "" {
 		port = "80"
 	}
