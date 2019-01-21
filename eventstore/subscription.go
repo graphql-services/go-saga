@@ -22,6 +22,16 @@ type Event struct {
 	Columns     []string    `json:"columns"`
 }
 
+// HasColumn check if given event has changes on specific column
+func (e Event) HasColumn(c string) bool {
+	for _, col := range e.Columns {
+		if col == c {
+			return true
+		}
+	}
+	return false
+}
+
 // OnEventOptions ...
 type OnEventOptions struct {
 	Channel     string
