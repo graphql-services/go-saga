@@ -2,12 +2,14 @@ package eventstore
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/bitly/go-nsq"
+	vice "github.com/matryer/vice/queues/nsq"
+	"github.com/nsqio/go-nsq"
 )
 
 // Event ...
@@ -34,6 +36,7 @@ func (e Event) HasColumn(c string) bool {
 
 // OnEventOptions ...
 type OnEventOptions struct {
+	Topic       string
 	Channel     string
 	HandlerFunc func(e Event) error
 }
@@ -48,33 +51,35 @@ func OnEvent(options OnEventOptions) {
 	}
 
 	go func() {
-		config := nsq.NewConfig()
-		q, err := nsq.NewConsumer("es-event", options.Channel, config)
-		if err != nil {
-			log.Panic(err)
+		transport := vice.New()
+		transport.NewConsumer = func(name string) (*nsq.Consumer, error) {
+			return nsq.NewConsumer(name, options.Channel, nsq.NewConfig())
 		}
-		q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
-			var e Event
-			err := json.Unmarshal(message.Body, &e)
-			if err != nil {
-				return err
+		transport.ConnectConsumer = func(consumer *nsq.Consumer) error {
+			if URL != "" {
+				addresses := strings.Split(URL, ",")
+				fmt.Println("connect NSQ", addresses)
+				return consumer.ConnectToNSQDs(addresses)
 			}
-			return options.HandlerFunc(e)
-		}))
-
-		if URL != "" {
-			addresses := strings.Split(URL, ",")
-			err = q.ConnectToNSQDs(addresses)
-			if err != nil {
-				log.Panic(err)
-			}
-		}
-
-		if LOOKUP_URL != "" {
 			addresses := strings.Split(LOOKUP_URL, ",")
-			err = q.ConnectToNSQLookupds(addresses)
+			return consumer.ConnectToNSQLookupds(addresses)
+		}
+
+		topic := options.Topic
+		if topic == "" {
+			topic = "es-event"
+		}
+
+		events := transport.Receive(topic)
+
+		for event := range events {
+			var e Event
+			err := json.Unmarshal(event, &e)
 			if err != nil {
-				log.Panic(err)
+				panic(err)
+			}
+			if err := options.HandlerFunc(e); err != nil {
+				panic(err)
 			}
 		}
 	}()
