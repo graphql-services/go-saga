@@ -44,9 +44,9 @@ type OnEventOptions struct {
 // OnEvent ...
 func OnEvent(options OnEventOptions) {
 	URL := os.Getenv("NSQ_URL")
-	LOOKUP_URL := os.Getenv("NSQ_LOOKUP_URL")
+	lookupURL := os.Getenv("NSQ_LOOKUP_URL")
 
-	if URL == "" && LOOKUP_URL == "" {
+	if URL == "" && lookupURL == "" {
 		log.Panic("You have to specify NSQ_URL or NSQ_LOOKUP_URL in environment variables")
 	}
 
@@ -61,7 +61,7 @@ func OnEvent(options OnEventOptions) {
 				fmt.Println("connect NSQ", addresses)
 				return consumer.ConnectToNSQDs(addresses)
 			}
-			addresses := strings.Split(LOOKUP_URL, ",")
+			addresses := strings.Split(lookupURL, ",")
 			return consumer.ConnectToNSQLookupds(addresses)
 		}
 

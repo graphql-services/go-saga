@@ -17,8 +17,7 @@ type FetchResponse struct {
 	Result interface{} `json:"result"`
 }
 
-func sendRequest(req *graphql.Request, res interface{}) error {
-	ctx := context.Background()
+func sendRequest(ctx context.Context, req *graphql.Request, res interface{}) error {
 	URL := os.Getenv("AGGREGATOR_URL")
 
 	if URL == "" {
@@ -41,7 +40,7 @@ type GetEntityOptions struct {
 }
 
 // GetEntity ...
-func GetEntity(options GetEntityOptions, res interface{}) error {
+func GetEntity(ctx context.Context, options GetEntityOptions, res interface{}) error {
 	query := fmt.Sprintf(`
 		query ($id: ID!) {
 			result: %s(id:$id) {
@@ -52,7 +51,7 @@ func GetEntity(options GetEntityOptions, res interface{}) error {
 	req := graphql.NewRequest(query)
 	req.Var("id", options.EntityID)
 
-	return sendRequest(req, res)
+	return sendRequest(ctx, req, res)
 }
 
 // GetEntitiesOptions ...
@@ -66,7 +65,7 @@ type GetEntitiesOptions struct {
 }
 
 // GetEntities ...
-func GetEntities(options GetEntitiesOptions, res interface{}) error {
+func GetEntities(ctx context.Context, options GetEntitiesOptions, res interface{}) error {
 	query := fmt.Sprintf(`
 		query ($filter: %sFilterType, $sort: [%sSortType], $limit: Int, $offset: Int) {
 			result: %s(filter:$filter,sort:$sort,limit:$limit,offset:$offset) {
@@ -87,5 +86,5 @@ func GetEntities(options GetEntitiesOptions, res interface{}) error {
 		req.Var("limit", options.Limit)
 	}
 
-	return sendRequest(req, res)
+	return sendRequest(ctx, req, res)
 }
