@@ -71,14 +71,20 @@ func OnEvent(options OnEventOptions) {
 		}
 
 		events := transport.Receive(topic)
+		errChan := transport.ErrChan()
 
-		for event := range events {
-			var e Event
-			err := json.Unmarshal(event, &e)
-			if err != nil {
-				panic(err)
-			}
-			if err := options.HandlerFunc(e); err != nil {
+		for {
+			select {
+			case event := <-events:
+				var e Event
+				err := json.Unmarshal(event, &e)
+				if err != nil {
+					panic(err)
+				}
+				if err := options.HandlerFunc(e); err != nil {
+					panic(err)
+				}
+			case err := <-errChan:
 				panic(err)
 			}
 		}
