@@ -12,18 +12,25 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
+type EventValue struct {
+	Name  string  `json:"name"`
+	Value *string `json:"value"`
+}
+
 // Event ...
 type Event struct {
-	ID          string                 `json:"id"`
-	Entity      string                 `json:"entity"`
-	EntityID    string                 `json:"entityId"`
-	Data        interface{}            `json:"data"`
-	OldValues   map[string]interface{} `json:"oldValues"`
-	NewValues   map[string]interface{} `json:"newValues"`
-	Type        string                 `json:"type"`
-	Date        time.Time              `json:"date"`
-	PrincipalID *string                `json:"principalId"`
-	Columns     []string               `json:"columns"`
+	ID            string       `json:"id"`
+	Cursor        string       `json:"cursor"`
+	OperationName string       `json:"operationName"`
+	Entity        string       `json:"entity"`
+	EntityID      string       `json:"entityId"`
+	Data          interface{}  `json:"data"`
+	OldValues     []EventValue `json:"oldValues"`
+	NewValues     []EventValue `json:"newValues"`
+	Type          string       `json:"type"`
+	Date          time.Time    `json:"date"`
+	PrincipalID   *string      `json:"principalId"`
+	Columns       []string     `json:"columns"`
 }
 
 // HasColumn check if given event has changes on specific column

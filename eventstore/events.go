@@ -2,7 +2,6 @@ package eventstore
 
 import (
 	"context"
-	"time"
 
 	"github.com/machinebox/graphql"
 )
@@ -38,20 +37,7 @@ type FetchEventsOptions struct {
 
 // FetchEventsResponse ...
 type FetchEventsResponse struct {
-	Events []struct {
-		ID            string `json:"id"`
-		Cursor        string
-		OperationName string
-		Type          FetchEventType
-		Entity        string
-		EntityID      string `json:"entityId"`
-		Data          string
-		Date          time.Time
-		OldValues     *map[string]interface{} `json:"oldValues"`
-		NewValues     *map[string]interface{} `json:"newValues"`
-		Columns       []string                `json:"columns"`
-		PrincipalID   *string                 `json:"principalId"`
-	}
+	Events []Event
 }
 
 // FetchEvents ...
@@ -66,8 +52,8 @@ func FetchEvents(ctx context.Context, options FetchEventsOptions, data *FetchEve
 				entity
 				entityId
 				data
-				newValues
-				oldValues
+				newValues { name value }
+				oldValues { name value }
 				date
 				columns
 				principalId
