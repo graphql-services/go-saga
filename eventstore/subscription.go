@@ -56,6 +56,26 @@ func (e Event) HasColumn(c string) bool {
 	return false
 }
 
+// OldValue ...
+func (e Event) OldValue(c string) *EventValue {
+	for _, v := range e.OldValues {
+		if v.Name == c {
+			return &v
+		}
+	}
+	return nil
+}
+
+// NewValue ...
+func (e Event) NewValue(c string) *EventValue {
+	for _, v := range e.NewValues {
+		if v.Name == c {
+			return &v
+		}
+	}
+	return nil
+}
+
 // OnEventOptions ...
 type OnEventOptions struct {
 	Topic       string
