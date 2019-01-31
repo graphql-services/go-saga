@@ -29,11 +29,11 @@ const (
 
 // FetchEventsOptions ...
 type FetchEventsOptions struct {
-	ID     *string
-	Entity *string
-	Cursor *string
-	Limit  *int
-	Sort   *FetchEventsSort
+	ID         *string
+	Entity     *string
+	CursorFrom *string
+	Limit      *int
+	Sort       *FetchEventsSort
 }
 
 // FetchEventsResponse ...
@@ -47,16 +47,18 @@ type FetchEventsResponse struct {
 		EntityID      string `json:"entityId"`
 		Data          string
 		Date          time.Time
-		Columns       []string `json:"columns"`
-		PrincipalID   *string  `json:"principalId"`
+		OldValues     *map[string]interface{} `json:"oldValues"`
+		NewValues     *map[string]interface{} `json:"newValues"`
+		Columns       []string                `json:"columns"`
+		PrincipalID   *string                 `json:"principalId"`
 	}
 }
 
 // FetchEvents ...
 func FetchEvents(ctx context.Context, options FetchEventsOptions, data *FetchEventsResponse) error {
 	query := `
-		query ($id:ID, $cursor: String, $limit: Int = 100, $entity: EventEntities, $sort: EventEntitiesSort) {
-			events: _events(id:$id,cursor:$cursor,limit:$limit,entity: $entity, sort: $sort) {
+		query ($id:ID, $cursorFrom: String, $limit: Int = 100, $entity: EventEntities, $sort: EventEntitiesSort) {
+			events: _events(id:$id,cursorFrom:$cursorFrom,limit:$limit,entity: $entity, sort: $sort) {
 				id
 				cursor
 				operationName
@@ -64,6 +66,8 @@ func FetchEvents(ctx context.Context, options FetchEventsOptions, data *FetchEve
 				entity
 				entityId
 				data
+				newValues
+				oldValues
 				date
 				columns
 				principalId
@@ -78,8 +82,8 @@ func FetchEvents(ctx context.Context, options FetchEventsOptions, data *FetchEve
 	if options.Entity != nil {
 		req.Var("entity", *options.Entity)
 	}
-	if options.Cursor != nil {
-		req.Var("cursor", *options.Cursor)
+	if options.CursorFrom != nil {
+		req.Var("cursorFrom", *options.CursorFrom)
 	}
 	if options.Limit != nil {
 		req.Var("limit", *options.Limit)
