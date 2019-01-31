@@ -2,6 +2,7 @@ package eventstore
 
 import (
 	"context"
+	"time"
 
 	"github.com/machinebox/graphql"
 )
@@ -27,7 +28,20 @@ type FetchEventsOptions struct {
 
 // FetchEventsResponse ...
 type FetchEventsResponse struct {
-	Events []Event
+	Events []struct {
+		ID            string         `json:"id"`
+		Cursor        string         `json:"cursor"`
+		OperationName *string        `json:"operationName"`
+		Entity        string         `json:"entity"`
+		EntityID      string         `json:"entityId"`
+		Data          string         `json:"data"`
+		OldValues     []EventValue   `json:"oldValues"`
+		NewValues     []EventValue   `json:"newValues"`
+		Type          FetchEventType `json:"type"`
+		Date          time.Time      `json:"date"`
+		PrincipalID   *string        `json:"principalId"`
+		Columns       []string       `json:"columns"`
+	}
 }
 
 // FetchEvents ...
