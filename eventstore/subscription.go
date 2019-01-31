@@ -12,6 +12,19 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
+// FetchEventType ...
+type FetchEventType string
+
+const (
+	// FetchEventTypeCreated ...
+	FetchEventTypeCreated = "CREATED"
+	// FetchEventTypeUpdated ...
+	FetchEventTypeUpdated = "UPDATED"
+	// FetchEventTypeDeleted ...
+	FetchEventTypeDeleted = "DELETED"
+)
+
+// EventValue ...
 type EventValue struct {
 	Name  string  `json:"name"`
 	Value *string `json:"value"`
@@ -19,18 +32,18 @@ type EventValue struct {
 
 // Event ...
 type Event struct {
-	ID            string       `json:"id"`
-	Cursor        string       `json:"cursor"`
-	OperationName string       `json:"operationName"`
-	Entity        string       `json:"entity"`
-	EntityID      string       `json:"entityId"`
-	Data          interface{}  `json:"data"`
-	OldValues     []EventValue `json:"oldValues"`
-	NewValues     []EventValue `json:"newValues"`
-	Type          string       `json:"type"`
-	Date          time.Time    `json:"date"`
-	PrincipalID   *string      `json:"principalId"`
-	Columns       []string     `json:"columns"`
+	ID            string         `json:"id"`
+	Cursor        string         `json:"cursor"`
+	OperationName *string        `json:"operationName"`
+	Entity        string         `json:"entity"`
+	EntityID      string         `json:"entityId"`
+	Data          interface{}    `json:"data"`
+	OldValues     []EventValue   `json:"oldValues"`
+	NewValues     []EventValue   `json:"newValues"`
+	Type          FetchEventType `json:"type"`
+	Date          time.Time      `json:"date"`
+	PrincipalID   *string        `json:"principalId"`
+	Columns       []string       `json:"columns"`
 }
 
 // HasColumn check if given event has changes on specific column
