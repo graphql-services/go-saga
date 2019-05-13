@@ -21,7 +21,7 @@ func sendRequest(ctx context.Context, req *graphql.Request, res interface{}) err
 	URL := os.Getenv("AGGREGATOR_URL")
 
 	if URL == "" {
-		URL = "http://event-store-aggergator/graphql"
+		return fmt.Errorf("Missing required environment variable AGGREGATOR_URL")
 	}
 
 	client := graphql.NewClient(URL)
