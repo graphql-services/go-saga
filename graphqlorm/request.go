@@ -1,4 +1,4 @@
-package orm
+package graphqlorm
 
 import (
 	"context"
