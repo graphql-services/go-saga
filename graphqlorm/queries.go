@@ -23,7 +23,7 @@ type GetEntityOptions struct {
 }
 
 // GetEntity ...
-func GetEntity(ctx context.Context, options GetEntityOptions, res interface{}) error {
+func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res interface{}) error {
 	query := fmt.Sprintf(`
 		query ($id: ID!) {
 			result: %s(id:$id) {
@@ -34,7 +34,7 @@ func GetEntity(ctx context.Context, options GetEntityOptions, res interface{}) e
 	req := graphql.NewRequest(query)
 	req.Var("id", options.EntityID)
 
-	return sendRequest(ctx, req, res)
+	return c.run(ctx, req, res)
 }
 
 // GetEntitiesOptions ...
@@ -48,7 +48,7 @@ type GetEntitiesOptions struct {
 }
 
 // GetEntities ...
-func GetEntities(ctx context.Context, options GetEntitiesOptions, res interface{}) error {
+func (c *ORMClient) GetEntities(ctx context.Context, options GetEntitiesOptions, res interface{}) error {
 	query := fmt.Sprintf(`
 		query ($filter: %sFilterType, $sort: [%sSortType], $limit: Int, $offset: Int) {
 			result: %s(filter:$filter,sort:$sort,limit:$limit,offset:$offset) {
@@ -69,5 +69,5 @@ func GetEntities(ctx context.Context, options GetEntitiesOptions, res interface{
 		req.Var("limit", options.Limit)
 	}
 
-	return sendRequest(ctx, req, res)
+	return c.run(ctx, req, res)
 }

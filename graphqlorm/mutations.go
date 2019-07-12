@@ -13,11 +13,16 @@ type CreateEntityOptions struct {
 	Input  interface{} `json:"input"`
 }
 
+// MutationResult ...
+type MutationResult struct {
+	ID string `json:"id"`
+}
+
 // CreateEntity ...
-func CreateEntity(ctx context.Context, options CreateEntityOptions) (interface{}, error) {
+func (c *ORMClient) CreateEntity(ctx context.Context, options CreateEntityOptions) (MutationResult, error) {
 	query := fmt.Sprintf(`
 		mutation ($input: %sCreateInput!) {
-			create%s (input:$input) {
+			result: create%s (input:$input) {
 				id
 			}
 		}
@@ -25,9 +30,11 @@ func CreateEntity(ctx context.Context, options CreateEntityOptions) (interface{}
 	req := graphql.NewRequest(query)
 	req.Var("input", options.Input)
 
-	var data interface{}
-	err := sendRequest(ctx, req, &data)
-	return data, err
+	var data struct {
+		Result MutationResult
+	}
+	err := c.run(ctx, req, &data)
+	return data.Result, err
 }
 
 // UpdateEntityOptions ...
@@ -38,7 +45,7 @@ type UpdateEntityOptions struct {
 }
 
 // UpdateEntity ...
-func UpdateEntity(ctx context.Context, options UpdateEntityOptions) (interface{}, error) {
+func (c *ORMClient) UpdateEntity(ctx context.Context, options UpdateEntityOptions) (MutationResult, error) {
 	query := fmt.Sprintf(`
 		mutation ($id:ID!, $input: %sUpdateInput!) {
 			update%s (id:$id, input:$input) {
@@ -51,9 +58,11 @@ func UpdateEntity(ctx context.Context, options UpdateEntityOptions) (interface{}
 	req.Var("id", options.EntityID)
 	req.Var("input", options.Input)
 
-	var data interface{}
-	err := sendRequest(ctx, req, &data)
-	return data, err
+	var data struct {
+		Result MutationResult
+	}
+	err := c.run(ctx, req, &data)
+	return data.Result, err
 }
 
 // DeleteEntityOptions ...
@@ -63,7 +72,7 @@ type DeleteEntityOptions struct {
 }
 
 // DeleteEntity ...
-func DeleteEntity(ctx context.Context, options DeleteEntityOptions) (interface{}, error) {
+func (c *ORMClient) DeleteEntity(ctx context.Context, options DeleteEntityOptions) (MutationResult, error) {
 	query := fmt.Sprintf(`
 		mutation ($id:ID!) {
 			delete%s (id:$id) {
@@ -75,7 +84,9 @@ func DeleteEntity(ctx context.Context, options DeleteEntityOptions) (interface{}
 	req := graphql.NewRequest(query)
 	req.Var("id", options.EntityID)
 
-	var data interface{}
-	err := sendRequest(ctx, req, &data)
-	return data, err
+	var data struct {
+		Result MutationResult
+	}
+	err := c.run(ctx, req, &data)
+	return data.Result, err
 }
