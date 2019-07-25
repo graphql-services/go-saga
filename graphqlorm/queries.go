@@ -50,7 +50,7 @@ type GetEntitiesOptions struct {
 // GetEntities ...
 func (c *ORMClient) GetEntities(ctx context.Context, options GetEntitiesOptions, res interface{}) error {
 	query := fmt.Sprintf(`
-		query ($filter: %sFilterType, $sort: [%sSortType], $limit: Int, $offset: Int) {
+		query ($filter: %sFilterType, $sort: [%sSortType!], $limit: Int, $offset: Int) {
 			result: %s(filter:$filter,sort:$sort,limit:$limit,offset:$offset) {
 				items {
 					id %s
