@@ -2,6 +2,8 @@ package graphqlorm
 
 import (
 	"context"
+	"log"
+	"os"
 
 	"github.com/machinebox/graphql"
 )
@@ -14,6 +16,9 @@ type ORMClient struct {
 // NewClient ...
 func NewClient(URL string) *ORMClient {
 	client := graphql.NewClient(URL)
+	if os.Getenv("DEBUG") == "true" {
+		client.Log = func(s string) { log.Println(s) }
+	}
 	return &ORMClient{client}
 }
 
