@@ -10,6 +10,8 @@ import (
 	"github.com/machinebox/graphql"
 )
 
+// DEPRECATED, please use github.com/graphql-services/notifications/client
+
 func sendRequest(req *graphql.Request) (interface{}, error) {
 	ctx := context.Background()
 	URL := os.Getenv("NOTIFICATIONS_URL")
