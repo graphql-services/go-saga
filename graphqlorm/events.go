@@ -16,9 +16,9 @@ type HandleEventOptions struct {
 }
 
 func HandleEvent(handler EventHandler, opts *HandleEventOptions) {
-	portString := opts.port
-	if portString == "" {
-		portString = "80"
+	portString := "80"
+	if opts != nil && opts.port != "" {
+		portString = opts.port
 	}
 	port, err := strconv.Atoi(portString)
 	if err != nil {
