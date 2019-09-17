@@ -15,7 +15,7 @@ func sendRequest(req *graphql.Request) (interface{}, error) {
 	URL := os.Getenv("NOTIFICATIONS_URL")
 
 	if URL == "" {
-		URL = "http://notificaitons/graphql"
+		return nil, fmt.Errorf("Missing required environment variable NOTIFICATIONS_URL")
 	}
 
 	client := graphql.NewClient(URL)
