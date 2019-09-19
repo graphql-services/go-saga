@@ -26,12 +26,12 @@ type GetEntityOptions struct {
 // GetEntity ...
 func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res interface{}) error {
 	query := fmt.Sprintf(`
-		query ($id: ID,$filter:%[1]sFilterType) {
+		query ($id: ID,$filter:%[2]sFilterType) {
 			result: %[1]s(id:$id, filter: $filter) {
-				id %[2]s
+				id %[3]s
 			}
 		}
-	`, strcase.ToLowerCamel(options.Entity), strings.Join(options.Fields, " "))
+	`, strcase.ToLowerCamel(options.Entity), options.Entity, strings.Join(options.Fields, " "))
 	req := graphql.NewRequest(query)
 	req.Var("id", options.EntityID)
 	req.Var("filter", options.Filter)
