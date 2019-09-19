@@ -18,9 +18,9 @@ type FetchResponse struct {
 // GetEntityOptions ...
 type GetEntityOptions struct {
 	Entity   string
-	EntityID string
+	EntityID *string
 	Fields   []string
-	Filter   map[string]interface{}
+	Filter   *map[string]interface{}
 }
 
 // GetEntity ...
@@ -33,8 +33,12 @@ func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res
 		}
 	`, strcase.ToLowerCamel(options.Entity), options.Entity, strings.Join(options.Fields, " "))
 	req := graphql.NewRequest(query)
-	req.Var("id", options.EntityID)
-	req.Var("filter", options.Filter)
+	if options.EntityID != nil {
+		req.Var("id", options.EntityID)
+	}
+	if options.Filter != nil {
+		req.Var("filter", options.Filter)
+	}
 
 	return c.run(ctx, req, res)
 }
@@ -43,7 +47,7 @@ func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res
 type GetEntitiesOptions struct {
 	Entity string
 	Fields []string
-	Filter map[string]interface{}
+	Filter *map[string]interface{}
 	Sort   []string
 	Limit  *int
 	Offset *int
@@ -62,7 +66,9 @@ func (c *ORMClient) GetEntities(ctx context.Context, options GetEntitiesOptions,
 		}
 	`, options.Entity, options.Entity, inflection.Plural(strcase.ToLowerCamel(options.Entity)), strings.Join(options.Fields, " "))
 	req := graphql.NewRequest(query)
-	req.Var("filter", options.Filter)
+	if options.Filter != nil {
+		req.Var("filter", options.Filter)
+	}
 	req.Var("sort", options.Sort)
 	if options.Offset != nil {
 		req.Var("offset", options.Offset)
