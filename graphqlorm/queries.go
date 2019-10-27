@@ -79,3 +79,12 @@ func (c *ORMClient) GetEntities(ctx context.Context, options GetEntitiesOptions,
 
 	return c.run(ctx, req, res)
 }
+
+// SendQuery ...
+func (c *ORMClient) SendQuery(ctx context.Context, query string, variables map[string]interface{}, res interface{}) error {
+	req := graphql.NewRequest(query)
+	for key, value := range variables {
+		req.Var(key, value)
+	}
+	return c.run(ctx, req, res)
+}
