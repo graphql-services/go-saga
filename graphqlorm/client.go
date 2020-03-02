@@ -3,10 +3,9 @@ package graphqlorm
 import (
 	"context"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/aws/aws-xray-sdk-go/xray"
+	// "github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/machinebox/graphql"
 )
 
@@ -17,7 +16,8 @@ type ORMClient struct {
 
 // NewClient ...
 func NewClient(URL string) *ORMClient {
-	client := graphql.NewClient(URL, graphql.WithHTTPClient(xray.Client(http.DefaultClient)))
+	// client := graphql.NewClient(URL, graphql.WithHTTPClient(xray.Client()))
+	client := graphql.NewClient(URL)
 	if os.Getenv("DEBUG") == "true" {
 		client.Log = func(s string) { log.Println(s) }
 	}
