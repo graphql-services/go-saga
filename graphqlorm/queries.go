@@ -34,7 +34,7 @@ func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res
 	`, strcase.ToLowerCamel(options.Entity), options.Entity, strings.Join(options.Fields, " "))
 	req := graphql.NewRequest(query)
 	if options.EntityID != nil {
-		req.Var("id", options.EntityID)
+		req.Var("id", *options.EntityID)
 	}
 	if options.Filter != nil {
 		req.Var("filter", options.Filter)
