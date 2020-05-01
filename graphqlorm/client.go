@@ -15,9 +15,9 @@ type ORMClient struct {
 }
 
 // NewClient ...
-func NewClient(URL string) *ORMClient {
+func NewClient(URL string, opts ...graphql.ClientOption) *ORMClient {
 	// client := graphql.NewClient(URL, graphql.WithHTTPClient(xray.Client()))
-	client := graphql.NewClient(URL)
+	client := graphql.NewClient(URL, opts...)
 	if os.Getenv("DEBUG") == "true" {
 		client.Log = func(s string) { log.Println(s) }
 	}
