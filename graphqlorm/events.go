@@ -12,13 +12,13 @@ import (
 type EventHandler (func(event events.Event) error)
 
 type HandleEventOptions struct {
-	port string
+	Port string
 }
 
 func HandleEvent(handler EventHandler, opts *HandleEventOptions) {
 	portString := "80"
-	if opts != nil && opts.port != "" {
-		portString = opts.port
+	if opts != nil && opts.Port != "" {
+		portString = opts.Port
 	}
 	port, err := strconv.Atoi(portString)
 	if err != nil {
