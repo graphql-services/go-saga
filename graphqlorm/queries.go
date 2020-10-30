@@ -54,19 +54,21 @@ func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res
 	return c.run(ctx, req, res)
 }
 
-type GetEntitiesSort string
+type GetEntitiesSortDirection string
 
 const (
-	GetEntitiesSortASC  GetEntitiesSort = "ASC"
-	GetEntitiesSortDESC GetEntitiesSort = "DESC"
+	GetEntitiesSortDirectionASC  GetEntitiesSort = "ASC"
+	GetEntitiesSortDirectionDESC GetEntitiesSort = "DESC"
 )
+
+type GetEntitiesSort map[string]GetEntitiesSortDirection
 
 // GetEntitiesOptions ...
 type GetEntitiesOptions struct {
 	Entity string
 	Fields []string
 	Filter *map[string]interface{}
-	Sort   map[string]GetEntitiesSort
+	Sort   []GetEntitiesSort
 	Limit  *int
 	Offset *int
 }
