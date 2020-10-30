@@ -57,8 +57,8 @@ func (c *ORMClient) GetEntity(ctx context.Context, options GetEntityOptions, res
 type GetEntitiesSortDirection string
 
 const (
-	GetEntitiesSortDirectionASC  GetEntitiesSort = "ASC"
-	GetEntitiesSortDirectionDESC GetEntitiesSort = "DESC"
+	GetEntitiesSortDirectionASC  GetEntitiesSortDirection = "ASC"
+	GetEntitiesSortDirectionDESC GetEntitiesSortDirection = "DESC"
 )
 
 type GetEntitiesSort map[string]GetEntitiesSortDirection
