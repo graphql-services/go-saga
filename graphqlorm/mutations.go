@@ -29,8 +29,11 @@ func (c *ORMClient) CreateEntity(ctx context.Context, options CreateEntityOption
 }
 
 // CreateEntities ...
-func (c *ORMClient) CreateEntities(ctx context.Context, options []CreateEntityOptions) ([]MutationResult, error) {
-
+func (c *ORMClient) CreateEntities(ctx context.Context, options []CreateEntityOptions) (res []MutationResult, err error) {
+	res = []MutationResult{}
+	if len(options) == 0 {
+		return
+	}
 	inputs := []string{}
 	for key, value := range options {
 		inputs = append(inputs, fmt.Sprintf(`$input%d: %sCreateInput!`, key, value.Entity))
@@ -55,9 +58,7 @@ func (c *ORMClient) CreateEntities(ctx context.Context, options []CreateEntityOp
 	}
 
 	var data map[string]MutationResult
-	err := c.run(ctx, req, &data)
-
-	res := []MutationResult{}
+	err = c.run(ctx, req, &data)
 
 	for _, val := range data {
 		res = append(res, val)
@@ -83,7 +84,11 @@ func (c *ORMClient) UpdateEntity(ctx context.Context, options UpdateEntityOption
 }
 
 // UpdateEntities ...
-func (c *ORMClient) UpdateEntities(ctx context.Context, options []UpdateEntityOptions) ([]MutationResult, error) {
+func (c *ORMClient) UpdateEntities(ctx context.Context, options []UpdateEntityOptions) (res []MutationResult, err error) {
+	res = []MutationResult{}
+	if len(options) == 0 {
+		return
+	}
 
 	inputs := []string{}
 	for key, value := range options {
@@ -109,9 +114,7 @@ func (c *ORMClient) UpdateEntities(ctx context.Context, options []UpdateEntityOp
 	}
 
 	var data map[string]MutationResult
-	err := c.run(ctx, req, &data)
-
-	res := []MutationResult{}
+	err = c.run(ctx, req, &data)
 
 	for _, val := range data {
 		res = append(res, val)
@@ -136,7 +139,11 @@ func (c *ORMClient) DeleteEntity(ctx context.Context, options DeleteEntityOption
 }
 
 // DeleteEntities ...
-func (c *ORMClient) DeleteEntities(ctx context.Context, options []DeleteEntityOptions) ([]MutationResult, error) {
+func (c *ORMClient) DeleteEntities(ctx context.Context, options []DeleteEntityOptions) (res []MutationResult, err error) {
+	res = []MutationResult{}
+	if len(options) == 0 {
+		return
+	}
 
 	inputs := []string{}
 	for key := range options {
@@ -162,9 +169,7 @@ func (c *ORMClient) DeleteEntities(ctx context.Context, options []DeleteEntityOp
 	}
 
 	var data map[string]MutationResult
-	err := c.run(ctx, req, &data)
-
-	res := []MutationResult{}
+	err = c.run(ctx, req, &data)
 
 	for _, val := range data {
 		res = append(res, val)
